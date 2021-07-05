@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "class-scheduler"
+version = "0.1.0"
+description = "A web app built over a pyomo solver to determine a suitable schedule for school classes."
+authors = ["Raymond DeVries"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^3.2.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+pre-commit = "^2.13.0"
+
+[tool.isort]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
