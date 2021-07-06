@@ -81,6 +81,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-bulma"
+version = "0.8.2"
+description = "Bulma CSS Framework for Django projects"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+django = ">=2.2"
+
+[[package]]
 name = "filelock"
 version = "3.0.12"
 description = "A platform independent file lock."
@@ -251,7 +262,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "03f9acc0b1ae35c305ea2d252f8cae220365ab630560244ac6a9a8535cf793de"
+content-hash = "40ec262d282b0416e77af71e4300ff759e1f5272d76ec94ebf136f3879977dbc"
 
 [metadata.files]
 appdirs = [
@@ -285,6 +296,10 @@ distlib = [
 django = [
     {file = "Django-3.2.5-py3-none-any.whl", hash = "sha256:c58b5f19c5ae0afe6d75cbdd7df561e6eb929339985dbbda2565e1cabb19a62e"},
     {file = "Django-3.2.5.tar.gz", hash = "sha256:3da05fea54fdec2315b54a563d5b59f3b4e2b1e69c3a5841dda35019c01855cd"},
+]
+django-bulma = [
+    {file = "django-bulma-0.8.2.tar.gz", hash = "sha256:779e23c2b7fe59d7d67b7d9f86c2e097a3128a910331fb78e71f2f93841f7a3a"},
+    {file = "django_bulma-0.8.2-py3-none-any.whl", hash = "sha256:7c682a0f9e15491f9cbebc8867d1d0592e660804962b4ca35bf550731df01321"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
