@@ -12,13 +12,18 @@ class Organization(models.Model):
         return self.name
 
 
-class Profile(models.Model):
+class OrgData(models.Model):
+    organization = models.ForeignKey(Organization, models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class Profile(OrgData):
     user = models.OneToOneField(User, models.CASCADE)
-    organization = models.ForeignKey(Organization, models.CASCADE)
 
 
-class Period(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class Period(OrgData):
     number = models.PositiveIntegerField()
     start = models.TimeField()
     end = models.TimeField()
@@ -27,8 +32,7 @@ class Period(models.Model):
         return str(self.number)
 
 
-class Teacher(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class Teacher(OrgData):
     last_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
 
@@ -36,16 +40,14 @@ class Teacher(models.Model):
         return f"{self.last_name}, {self.first_name}"
 
 
-class Building(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class Building(OrgData):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
-class Room(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class Room(OrgData):
     number = models.IntegerField()
     building = models.ForeignKey(Building, models.CASCADE)
 
@@ -53,8 +55,7 @@ class Room(models.Model):
         return f"{self.building}, Room {self.number}"
 
 
-class Course(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class Course(OrgData):
     name = models.CharField(max_length=150)
     number_offered = models.PositiveIntegerField(default=1)
     teacher = models.ManyToManyField(Teacher)
@@ -62,8 +63,7 @@ class Course(models.Model):
     barred_period = models.ManyToManyField(Period)
 
 
-class AnchoredCourse(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class AnchoredCourse(OrgData):
     course = models.ForeignKey(Course, models.CASCADE)
     room = models.ForeignKey(Room, models.CASCADE)
     period = models.ForeignKey(Period, models.CASCADE)
@@ -72,8 +72,7 @@ class AnchoredCourse(models.Model):
         return f"Course: {self.course}, Room: {self.room}, Period: {self.period}"
 
 
-class MandatorySchedule(models.Model):
-    organization = models.ForeignKey(Organization, models.CASCADE)
+class MandatorySchedule(OrgData):
     name = models.CharField(max_length=100, blank=True)
     courses = models.ManyToManyField(Course)
 
