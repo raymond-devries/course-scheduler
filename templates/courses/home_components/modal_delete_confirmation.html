@@ -1,0 +1,19 @@
+{% load bulma_tags %}
+<div x-data="{visible: true}">
+    <div class="modal is-active" x-show="visible">
+        <div class="modal-background" @click="visible=false"></div>
+        <div class="modal-content box">
+            <h4 class="title">Confirm Deletion</h4>
+            <p>Are you sure you want to delete this {{ model_name }}? {{ message }}</p>
+            <hr>
+            <button class="button is-danger"
+                    hx-delete="{{ request.path }}"
+                    hx-swap="outerHTML"
+                    hx-target="#parent">
+                Delete
+            </button>
+            <button class="button is-dark" @click.prevent="visible=false">Cancel</button>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="visible=false"></button>
+    </div>
+</div>

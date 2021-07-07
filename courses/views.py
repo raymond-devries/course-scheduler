@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from courses import forms, models
@@ -45,8 +44,8 @@ def add_model(request, model_form, context_name):
 
 
 @login_required
-def edit_model(request, model_form, pk):
-    instance = get_object_or_404(models.Period, pk=pk, organization=get_org(request))
+def edit_model(request, model, model_form, pk):
+    instance = get_object_or_404(model, pk=pk, organization=get_org(request))
     if request.method == "POST":
         form = model_form(request.POST, instance=instance)
         if form.is_valid():
@@ -58,9 +57,27 @@ def edit_model(request, model_form, pk):
     return render(request, "courses/home_components/modal_edit.html", context=context)
 
 
+@login_required
+def delete_model(request, model, pk, message=""):
+    instance = get_object_or_404(model, pk=pk, organization=get_org(request))
+    if request.method == "DELETE":
+        instance.delete()
+        return partial_home(request, context=get_home_context(request))
+    context = {"model_name": model.__name__, "message": message}
+    return render(
+        request,
+        "courses/home_components/modal_delete_confirmation.html",
+        context=context,
+    )
+
+
 def add_period(request):
     return add_model(request, forms.PeriodForm, "period_form")
 
 
 def edit_period(request, pk):
-    return edit_model(request, forms.PeriodForm, pk)
+    return edit_model(request, models.Period, forms.PeriodForm, pk)
+
+
+def delete_period(request, pk):
+    return delete_model(request, models.Period, pk)
