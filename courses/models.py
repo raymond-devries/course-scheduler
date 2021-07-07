@@ -24,7 +24,7 @@ class Period(models.Model):
     end = models.TimeField()
 
     def __str__(self):
-        return self.number
+        return str(self.number)
 
 
 class Teacher(models.Model):

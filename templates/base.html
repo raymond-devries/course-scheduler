@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma/css/bulma.min.css">
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -69,5 +71,10 @@
         }
 
     });
+</script>
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
 </script>
 </html>

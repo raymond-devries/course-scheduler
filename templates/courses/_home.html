@@ -1,0 +1,46 @@
+{% load bulma_tags %}
+<div class="tile is-ancestor" id="parent">
+    <div class="tile is-parent">
+        <div class="tile is-child box">
+            <h4 class="title is-4">Periods</h4>
+            <div class="content">
+                <ul>
+                    {% for period in periods %}
+                        <li>{{ period.number }}
+                            <button class="button is-info"
+                                    hx-get="{% url "edit_period" pk=period.pk %}"
+                                    hx-swap="innerHTML"
+                                    hx-target="#modal-edit">
+                                Edit
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ period_form|bulma }}
+                    <button class="button is-info"
+                            hx-post="{% url "add_period" %}"
+                            hx-swap="outerHTML"
+                            hx-target="#parent">
+                        Add Period
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="tile is-parent">
+        <div class="tile is-child box">
+            <h4 class="title is-4">Teachers</h4>
+            <div class="content">
+                <ul>
+                    {% for teacher in teachers %}
+                        <li>{{ teacher.last_name }}, {{ teacher.first_name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="modal-edit">
+    </div>
+</div>

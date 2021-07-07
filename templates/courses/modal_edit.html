@@ -1,0 +1,20 @@
+{% load bulma_tags %}
+<div x-data="{visible: true}">
+    <div class="modal is-active" x-show="visible">
+        <div class="modal-background"></div>
+        <div class="modal-content box">
+            <form method="post">
+                {% csrf_token %}
+                {{ edit_form|bulma }}
+                <button class="button is-info"
+                        hx-post="{{ request.path }}"
+                        hx-swap="outerHTML"
+                        hx-target="#parent">
+                    Edit
+                </button>
+                <button class="button is-danger" @click.prevent="visible=false">Cancel</button>
+            </form>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+</div>
