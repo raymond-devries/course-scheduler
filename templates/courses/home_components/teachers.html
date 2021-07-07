@@ -1,0 +1,8 @@
+<h4 class="title is-4">Teachers</h4>
+<div class="content">
+    <ul>
+        {% for teacher in teachers %}
+            <li>{{ teacher.last_name }}, {{ teacher.first_name }}</li>
+        {% endfor %}
+    </ul>
+</div>

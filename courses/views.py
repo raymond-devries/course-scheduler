@@ -55,7 +55,7 @@ def edit_model(request, model_form, pk):
     else:
         form = model_form(instance=instance)
     context = {"edit_form": form}
-    return render(request, "courses/modal_edit.html", context=context)
+    return render(request, "courses/home_components/modal_edit.html", context=context)
 
 
 def add_period(request):
