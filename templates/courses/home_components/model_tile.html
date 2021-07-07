@@ -1,29 +1,32 @@
 {% load bulma_tags %}
-<h4 class="title is-4">Teachers</h4>
+{% load obj_tags %}
+<h4 class="title is-4">{{ data.model_name }}</h4>
 <div class="content">
     <table class="table">
         <thead>
         <tr>
-            <th>Last Name</th>
-            <th>First Name</th>
+            {% for header in data.field_headers %}
+                <th>{{ header }}</th>
+            {% endfor %}
             <th></th>
         </tr>
         </thead>
         <tbody>
-        {% for teacher in teachers %}
+        {% for instance in data.instances %}
             <tr>
-                <td>{{ teacher.first_name }}</td>
-                <td>{{ teacher.last_name }}</td>
+                {% for field in data.fields %}
+                    <td>{{ instance|get_obj_attr:field }}</td>
+                {% endfor %}
                 <td>
                     <div class="buttons">
                         <button class="button is-info"
-                                hx-get="{% url "edit_teacher" pk=teacher.pk %}"
+                                hx-get="{% url data.url.edit pk=instance.pk %}"
                                 hx-swap="innerHTML"
                                 hx-target="#modal-edit">
                             Edit
                         </button>
                         <button class="button is-danger"
-                                hx-get="{% url "delete_teacher" pk=teacher.pk %}"
+                                hx-get="{% url data.url.delete pk=instance.pk %}"
                                 hx-swap="innerHTML"
                                 hx-target="#modal-edit">
                             Delete
@@ -36,12 +39,12 @@
     </table>
     <form method="post">
         {% csrf_token %}
-        {{ teacher_form|bulma }}
+        {{ data.form|bulma }}
         <button class="button is-info"
-                hx-post="{% url "add_teacher" %}"
+                hx-post="{% url data.url.add %}"
                 hx-swap="outerHTML"
                 hx-target="#parent">
-            Add Teacher
+            Add {{ data.model_name }}
         </button>
     </form>
 </div>

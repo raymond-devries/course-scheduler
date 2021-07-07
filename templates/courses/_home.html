@@ -1,15 +1,38 @@
 {% load bulma_tags %}
-<div class="tile is-ancestor" id="parent">
+<div class="tile is-ancestor is-vertical" id="parent">
     <div class="tile is-parent">
-        <div class="tile is-child box">
-           {% include "courses/home_components/periods.html" %}
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/model_tile.html" with data=period_data %}
+            </div>
+        </div>
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/model_tile.html" with data=teacher_data %}
+            </div>
+        </div>
+    </div>
+
+    <div class="tile is-parent">
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/model_tile.html" with data=building_data %}
+            </div>
+        </div>
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/model_tile.html" with data=room_data %}
+            </div>
         </div>
     </div>
     <div class="tile is-parent">
-        <div class="tile is-child box">
-            {% include "courses/home_components/teachers.html" %}
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/course_tile.html" with data=course_data %}
+            </div>
         </div>
     </div>
+
     <div id="modal-edit">
     </div>
 </div>

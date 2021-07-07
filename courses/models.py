@@ -29,7 +29,7 @@ class Period(OrgData):
     end = models.TimeField()
 
     def __str__(self):
-        return str(self.number)
+        return f"Period {self.number}"
 
 
 class Teacher(OrgData):
@@ -60,7 +60,10 @@ class Course(OrgData):
     number_offered = models.PositiveIntegerField(default=1)
     teacher = models.ManyToManyField(Teacher)
     room = models.ManyToManyField(Room)
-    barred_period = models.ManyToManyField(Period)
+    barred_period = models.ManyToManyField(Period, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class AnchoredCourse(OrgData):

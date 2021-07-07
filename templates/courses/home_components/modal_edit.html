@@ -3,6 +3,8 @@
     <div class="modal is-active" x-show="visible">
         <div class="modal-background" @click="visible=false"></div>
         <div class="modal-content box">
+            <h4 class="title">Edit {{ model_name }}</h4>
+            <hr>
             <form method="post">
                 {% csrf_token %}
                 {{ edit_form|bulma }}

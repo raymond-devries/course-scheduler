@@ -8,12 +8,59 @@ def get_org(request):
     return request.user.profile.organization
 
 
-def get_home_context(request):
+def create_model_context(request, model, form, field_headers, fields, url_suffix):
     org = get_org(request)
     return {
-        "periods": models.Period.objects.filter(organization=org),
-        "period_form": forms.PeriodForm(),
-        "teachers": models.Teacher.objects.filter(organization=org),
+        "instances": model.objects.filter(organization=org),
+        "form": form(),
+        "model_name": model.__name__,
+        "field_headers": field_headers,
+        "fields": fields,
+        "url": {
+            "add": "add_" + url_suffix,
+            "edit": "edit_" + url_suffix,
+            "delete": "delete_" + url_suffix,
+        },
+    }
+
+
+def get_home_context(request):
+    return {
+        "period_data": create_model_context(
+            request,
+            models.Period,
+            forms.PeriodForm,
+            ["#", "Start", "End"],
+            ["number", "start", "end"],
+            "period",
+        ),
+        "teacher_data": create_model_context(
+            request,
+            models.Teacher,
+            forms.TeacherForm,
+            ["Last name", "First name"],
+            ["last_name", "first_name"],
+            "teacher",
+        ),
+        "building_data": create_model_context(
+            request, models.Building, forms.BuildingForm, ["Name"], ["name"], "building"
+        ),
+        "room_data": create_model_context(
+            request,
+            models.Room,
+            forms.RoomForm,
+            ["Building", "#"],
+            ["building", "number"],
+            "room",
+        ),
+        "course_data": create_model_context(
+            request,
+            models.Course,
+            forms.CourseForm,
+            ["Name", "# Offered", "Teachers", "Rooms", "Barred Periods"],
+            ["name", "number_offered", "teacher", "room", "barred_period"],
+            "course",
+        ),
     }
 
 
@@ -35,11 +82,12 @@ def add_model(request, model_form, context_name):
             model_instance = form.save(commit=False)
             model_instance.organization = get_org(request)
             model_instance.save()
+            form.save_m2m()
             return partial_home(request, get_home_context(request))
     else:
         form = model_form()
     context = get_home_context(request)
-    context[context_name] = form
+    context[context_name]["form"] = form
     return partial_home(request, context)
 
 
@@ -53,7 +101,7 @@ def edit_model(request, model, model_form, pk):
             return partial_home(request, context=get_home_context(request))
     else:
         form = model_form(instance=instance)
-    context = {"edit_form": form}
+    context = {"edit_form": form, "model_name": model.__name__}
     return render(request, "courses/home_components/modal_edit.html", context=context)
 
 
@@ -72,7 +120,7 @@ def delete_model(request, model, pk, message=""):
 
 
 def add_period(request):
-    return add_model(request, forms.PeriodForm, "period_form")
+    return add_model(request, forms.PeriodForm, "period_data")
 
 
 def edit_period(request, pk):
@@ -81,3 +129,51 @@ def edit_period(request, pk):
 
 def delete_period(request, pk):
     return delete_model(request, models.Period, pk)
+
+
+def add_teacher(request):
+    return add_model(request, forms.TeacherForm, "teacher_data")
+
+
+def edit_teacher(request, pk):
+    return edit_model(request, models.Teacher, forms.TeacherForm, pk)
+
+
+def delete_teacher(request, pk):
+    return delete_model(request, models.Teacher, pk)
+
+
+def add_building(request):
+    return add_model(request, forms.BuildingForm, "building_data")
+
+
+def edit_building(request, pk):
+    return edit_model(request, models.Building, forms.BuildingForm, pk)
+
+
+def delete_building(request, pk):
+    return delete_model(request, models.Building, pk)
+
+
+def add_room(request):
+    return add_model(request, forms.RoomForm, "room_data")
+
+
+def edit_room(request, pk):
+    return edit_model(request, models.Room, forms.RoomForm, pk)
+
+
+def delete_room(request, pk):
+    return delete_model(request, models.Room, pk)
+
+
+def add_course(request):
+    return add_model(request, forms.CourseForm, "course_data")
+
+
+def edit_course(request, pk):
+    return edit_model(request, models.Course, forms.CourseForm, pk)
+
+
+def delete_course(request, pk):
+    return delete_model(request, models.Course, pk)

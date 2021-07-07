@@ -12,3 +12,27 @@ class PeriodForm(forms.ModelForm):
             "start": forms.TimeInput(attrs={"type": "time"}),
             "end": forms.TimeInput(attrs={"type": "time"}),
         }
+
+
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = models.Teacher
+        exclude = ["organization"]
+
+
+class BuildingForm(forms.ModelForm):
+    class Meta:
+        model = models.Building
+        exclude = ["organization"]
+
+
+class RoomForm(forms.ModelForm):
+    class Meta:
+        model = models.Room
+        exclude = ["organization"]
+
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = models.Course
+        exclude = ["organization"]

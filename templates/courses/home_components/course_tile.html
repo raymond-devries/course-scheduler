@@ -1,0 +1,64 @@
+{% load bulma_tags %}
+{% load obj_tags %}
+<h4 class="title is-4">{{ data.model_name }}</h4>
+<div class="content">
+    <table class="table">
+        <thead>
+        <tr>
+            {% for header in data.field_headers %}
+                <th>{{ header }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for instance in data.instances %}
+            <tr>
+                <td>{{ instance.name }}</td>
+                <td>{{ instance.number_offered }}</td>
+                <td>
+                    {% for teacher in instance.teacher.all %}
+                        <span class="tag is-primary">{{ teacher.last_name }}, {{ teacher.first_name }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for room in instance.room.all %}
+                        <span class="tag is-dark">{{ room }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for period in instance.barred_period.all %}
+                        <span class="tag is-warning">{{ period }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <div class="buttons">
+                        <button class="button is-info is-fullwidth"
+                                hx-get="{% url data.url.edit pk=instance.pk %}"
+                                hx-swap="innerHTML"
+                                hx-target="#modal-edit">
+                            Edit
+                        </button>
+                        <button class="button is-danger is-fullwidth"
+                                hx-get="{% url data.url.delete pk=instance.pk %}"
+                                hx-swap="innerHTML"
+                                hx-target="#modal-edit">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form method="post">
+        {% csrf_token %}
+        {{ data.form|bulma }}
+        <button class="button is-info"
+                hx-post="{% url data.url.add %}"
+                hx-swap="outerHTML"
+                hx-target="#parent">
+            Add {{ data.model_name }}
+        </button>
+    </form>
+</div>
