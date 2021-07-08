@@ -1,0 +1,11 @@
+{% load bulma_tags %}
+<form method="post">
+    {% csrf_token %}
+    {{ data.form|bulma }}
+    <button class="button is-info"
+            hx-post="{% url data.url.add %}"
+            hx-swap="outerHTML"
+            hx-target="#parent">
+        Add {{ data.model_name }}
+    </button>
+</form>

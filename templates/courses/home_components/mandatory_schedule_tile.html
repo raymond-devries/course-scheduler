@@ -1,4 +1,3 @@
-{% load bulma_tags %}
 {% load obj_tags %}
 <h4 class="title is-4">{{ data.model_name }}</h4>
 <div class="content">
@@ -7,9 +6,12 @@
         <tbody>
         {% for instance in data.instances %}
             <tr>
-                {% for field in data.fields %}
-                    <td>{{ instance|get_obj_attr:field }}</td>
-                {% endfor %}
+                <td>{{ instance.name }}</td>
+                <td>
+                    {% for course in instance.courses.all %}
+                        <span class="tag is-primary">{{ course }}</span>
+                    {% endfor %}
+                </td>
                 {% include "courses/home_components/edit_delete_buttons.html" %}
             </tr>
         {% endfor %}

@@ -21,4 +21,34 @@ urlpatterns = [
     path("data/add-course/", views.add_course, name="add_course"),
     path("data/edit-course/<int:pk>/", views.edit_course, name="edit_course"),
     path("data/delete-course/<int:pk>/", views.delete_course, name="delete_course"),
+    path(
+        "data/add-anchored-course/",
+        views.add_anchored_course,
+        name="add_anchored_course",
+    ),
+    path(
+        "data/edit-anchored-course/<int:pk>/",
+        views.edit_anchored_course,
+        name="edit_anchored_course",
+    ),
+    path(
+        "data/delete-anchored-course/<int:pk>/",
+        views.delete_anchored_course,
+        name="delete_anchored_course",
+    ),
+    path(
+        "data/add-mandatory-schedule/",
+        views.add_mandatory_schedule,
+        name="add_mandatory_schedule",
+    ),
+    path(
+        "data/edit-mandatory-schedule/<int:pk>/",
+        views.edit_mandatory_schedule,
+        name="edit_mandatory_schedule",
+    ),
+    path(
+        "data/delete-mandatory-schedule/<int:pk>/",
+        views.delete_mandatory_schedule,
+        name="delete_mandatory_schedule",
+    ),
 ]

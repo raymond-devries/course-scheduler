@@ -25,10 +25,24 @@
             </div>
         </div>
     </div>
+
     <div class="tile is-parent">
         <div class="tile is-parent">
             <div class="tile is-child box">
                 {% include "courses/home_components/course_tile.html" with data=course_data %}
+            </div>
+        </div>
+    </div>
+
+    <div class="tile is-parent">
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/model_tile.html" with data=anchored_course_data %}
+            </div>
+        </div>
+        <div class="tile is-parent">
+            <div class="tile is-child box">
+                {% include "courses/home_components/mandatory_schedule_tile.html" with data=mandatory_schedule_data %}
             </div>
         </div>
     </div>

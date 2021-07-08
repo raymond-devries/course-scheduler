@@ -8,12 +8,16 @@ def get_org(request):
     return request.user.profile.organization
 
 
+def get_model_name(model):
+    return model._meta.verbose_name.title()
+
+
 def create_model_context(request, model, form, field_headers, fields, url_suffix):
     org = get_org(request)
     return {
         "instances": model.objects.filter(organization=org),
         "form": form(),
-        "model_name": model.__name__,
+        "model_name": get_model_name(model),
         "field_headers": field_headers,
         "fields": fields,
         "url": {
@@ -61,6 +65,22 @@ def get_home_context(request):
             ["name", "number_offered", "teacher", "room", "barred_period"],
             "course",
         ),
+        "anchored_course_data": create_model_context(
+            request,
+            models.AnchoredCourse,
+            forms.AnchoredCourseForm,
+            ["Course", "Room", "Period"],
+            ["course", "room", "period"],
+            "anchored_course",
+        ),
+        "mandatory_schedule_data": create_model_context(
+            request,
+            models.MandatorySchedule,
+            forms.MandatoryScheduleForm,
+            ["Name", "Courses"],
+            ["name", "courses"],
+            "mandatory_schedule",
+        ),
     }
 
 
@@ -103,11 +123,11 @@ def edit_model(request, model, model_form, pk):
             return partial_home(request, context=context)
         context["include_modal"] = True
         context["edit_form"] = form
-        context["model_name"] = model.__name__
+        context["model_name"] = get_model_name(model)
         return partial_home(request, context=context)
     else:
         form = model_form(instance=instance)
-    context = {"edit_form": form, "model_name": model.__name__}
+    context = {"edit_form": form, "model_name": get_model_name(model)}
     return render(request, "courses/home_components/modal_edit.html", context=context)
 
 
@@ -117,7 +137,7 @@ def delete_model(request, model, pk, message=""):
     if request.method == "DELETE":
         instance.delete()
         return partial_home(request, context=get_home_context(request))
-    context = {"model_name": model.__name__, "message": message}
+    context = {"model_name": get_model_name(model), "message": message}
     return render(
         request,
         "courses/home_components/modal_delete_confirmation.html",
@@ -183,3 +203,29 @@ def edit_course(request, pk):
 
 def delete_course(request, pk):
     return delete_model(request, models.Course, pk)
+
+
+def add_anchored_course(request):
+    return add_model(request, forms.AnchoredCourseForm, "anchored_course_data")
+
+
+def edit_anchored_course(request, pk):
+    return edit_model(request, models.AnchoredCourse, forms.AnchoredCourseForm, pk)
+
+
+def delete_anchored_course(request, pk):
+    return delete_model(request, models.AnchoredCourse, pk)
+
+
+def add_mandatory_schedule(request):
+    return add_model(request, forms.MandatoryScheduleForm, "mandatory_schedule_data")
+
+
+def edit_mandatory_schedule(request, pk):
+    return edit_model(
+        request, models.MandatorySchedule, forms.MandatoryScheduleForm, pk
+    )
+
+
+def delete_mandatory_schedule(request, pk):
+    return delete_model(request, models.MandatorySchedule, pk)

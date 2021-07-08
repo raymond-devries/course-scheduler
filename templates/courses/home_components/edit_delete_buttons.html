@@ -1,0 +1,16 @@
+<td>
+    <div class="buttons">
+        <button class="button is-info"
+                hx-get="{% url data.url.edit pk=instance.pk %}"
+                hx-swap="innerHTML"
+                hx-target="#modal-edit">
+            Edit
+        </button>
+        <button class="button is-danger"
+                hx-get="{% url data.url.delete pk=instance.pk %}"
+                hx-swap="innerHTML"
+                hx-target="#modal-edit">
+            Delete
+        </button>
+    </div>
+</td>

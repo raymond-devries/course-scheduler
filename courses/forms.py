@@ -36,3 +36,15 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = models.Course
         exclude = ["organization"]
+
+
+class AnchoredCourseForm(forms.ModelForm):
+    class Meta:
+        model = models.AnchoredCourse
+        exclude = ["organization"]
+
+
+class MandatoryScheduleForm(forms.ModelForm):
+    class Meta:
+        model = models.MandatorySchedule
+        exclude = ["organization"]
