@@ -96,9 +96,15 @@ def edit_model(request, model, model_form, pk):
     instance = get_object_or_404(model, pk=pk, organization=get_org(request))
     if request.method == "POST":
         form = model_form(request.POST, instance=instance)
+        context = get_home_context(request)
         if form.is_valid():
             form.save()
-            return partial_home(request, context=get_home_context(request))
+            context["include_modal"] = False
+            return partial_home(request, context=context)
+        context["include_modal"] = True
+        context["edit_form"] = form
+        context["model_name"] = model.__name__
+        return partial_home(request, context=context)
     else:
         form = model_form(instance=instance)
     context = {"edit_form": form, "model_name": model.__name__}

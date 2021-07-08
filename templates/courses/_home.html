@@ -34,5 +34,8 @@
     </div>
 
     <div id="modal-edit">
+        {% if include_modal %}
+            {% include "courses/home_components/modal_edit.html" %}
+        {% endif %}
     </div>
 </div>
