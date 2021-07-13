@@ -2,7 +2,16 @@
 {% block content %}
     <div class="box has-background-dark">
         <h2 class="has-text-centered title is-2 has-text-white">Course Scheduler</h2>
-        <p class="has-text-centered has-text-white">Start by adding teachers, buildings, rooms and courses.</p>
+        <p class="has-text-centered has-text-white">Start by adding teachers, buildings,
+            rooms and courses.</p>
     </div>
+    <a class="button is-primary is-large is-fullwidth"
+       href="{% url "solve" %}">
+        Create Schedule
+    </a>
     {% include "courses/_home.html" %}
+    <a class="button is-primary is-large is-fullwidth"
+       href="{% url "solve" %}">
+        Create Schedule
+    </a>
 {% endblock %}

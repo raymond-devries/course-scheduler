@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>{{ schedule }}</p>
+    <table class="table">
+        <thead>
+        <th></th>
+        {% for room in rooms %}
+            <th>{{ room }}</th>
+        {% endfor %}
+        </thead>
+        <tbody>
+        {% for period, assignment in assignments %}
+            <tr>
+                <td>{{ period }}</td>
+                {% for course, teacher in assignment %}
+                    <td>
+                        <b>{{ course }}</b><br>
+                        {{ teacher }}
+                    </td>
+                {% endfor %}
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

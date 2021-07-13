@@ -119,6 +119,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "model-bakery"
+version = "1.3.2"
+description = "Smart object creation facility for Django."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=2.2"
+
+[[package]]
 name = "nodeenv"
 version = "1.6.0"
 description = "Node.js virtual environment builder"
@@ -149,6 +160,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 dev = ["pre-commit", "tox"]
 
 [[package]]
+name = "ply"
+version = "3.11"
+description = "Python Lex & Yacc"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pre-commit"
 version = "2.13.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -171,6 +190,17 @@ description = "library with cross-python path, ini-parsing, io, code, log facili
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
+name = "pyomo"
+version = "6.0.1"
+description = "Pyomo: Python Optimization Modeling Objects"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+ply = "*"
 
 [[package]]
 name = "pyparsing"
@@ -200,6 +230,21 @@ toml = "*"
 
 [package.extras]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
+
+[[package]]
+name = "pytest-django"
+version = "4.4.0"
+description = "A Django plugin for pytest."
+category = "dev"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+pytest = ">=5.4.0"
+
+[package.extras]
+docs = ["sphinx", "sphinx-rtd-theme"]
+testing = ["django", "django-configurations (>=2.0)"]
 
 [[package]]
 name = "pytz"
@@ -262,7 +307,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "40ec262d282b0416e77af71e4300ff759e1f5272d76ec94ebf136f3879977dbc"
+content-hash = "80d871a372c0c072e2e32ddd974a6b2800be1e4a1c289d3b8fb5a863dc9e61d2"
 
 [metadata.files]
 appdirs = [
@@ -313,6 +358,10 @@ iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
+model-bakery = [
+    {file = "model_bakery-1.3.2-py2.py3-none-any.whl", hash = "sha256:bebde0d4f895f55a8cf26706275a238fecdf0fddd227214675b7351598c99ce5"},
+    {file = "model_bakery-1.3.2.tar.gz", hash = "sha256:7e06071c7ba5c58f9c1d7245b4b80cc5240806f30c4561f5c04a652d67626725"},
+]
 nodeenv = [
     {file = "nodeenv-1.6.0-py2.py3-none-any.whl", hash = "sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7"},
     {file = "nodeenv-1.6.0.tar.gz", hash = "sha256:3ef13ff90291ba2a4a7a4ff9a979b63ffdd00a464dbe04acf0ea6471517a4c2b"},
@@ -325,6 +374,10 @@ pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
+ply = [
+    {file = "ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"},
+    {file = "ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3"},
+]
 pre-commit = [
     {file = "pre_commit-2.13.0-py2.py3-none-any.whl", hash = "sha256:b679d0fddd5b9d6d98783ae5f10fd0c4c59954f375b70a58cbe1ce9bcf9809a4"},
     {file = "pre_commit-2.13.0.tar.gz", hash = "sha256:764972c60693dc668ba8e86eb29654ec3144501310f7198742a767bec385a378"},
@@ -333,6 +386,21 @@ py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
     {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
 ]
+pyomo = [
+    {file = "Pyomo-6.0.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:41f6f820f44b719dad572c2d3968c98049912822ab75d03c07470cd67f625427"},
+    {file = "Pyomo-6.0.1-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:5f14d322dd0b14e82062081b13147695b3d5da5f0510964d894f70cf163334aa"},
+    {file = "Pyomo-6.0.1-cp36-cp36m-win_amd64.whl", hash = "sha256:87e24cbc64dcfadf694853355c780a4868c880ee53c0a6314a22972fb2aba090"},
+    {file = "Pyomo-6.0.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:649671dba5d302dc0e33da96a32fff2aa35be1e1403d5761d3e6d258b01853b6"},
+    {file = "Pyomo-6.0.1-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:1d8e612b5b44df2383a97c759ad658e174676631a6d705a05292c2416952180a"},
+    {file = "Pyomo-6.0.1-cp37-cp37m-win_amd64.whl", hash = "sha256:4b2f63bb079d8448102104461f08f420ae3555cb0cfef22cd4a61ce40b1a2d9b"},
+    {file = "Pyomo-6.0.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:cb9758f01217507fa0a95b63bf257002e80f0e8024cdffac41af229a4abfe33b"},
+    {file = "Pyomo-6.0.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:6ce367605fa10c2b7ee6522e1d382a8f0d350bb97721c5448bba67a832f9ef19"},
+    {file = "Pyomo-6.0.1-cp38-cp38-win_amd64.whl", hash = "sha256:b786f308a7eb4e163db442375881f5931e97134f9524e626e0997a82cef960b3"},
+    {file = "Pyomo-6.0.1-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:fae5f4eb05e5e37604aecddda60217d6078996eb8c2e3b5d1e2725f1955f8261"},
+    {file = "Pyomo-6.0.1-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:b79cb5db2f7c2d7dff11921a83bee524a767020023799fca5957de4c25921961"},
+    {file = "Pyomo-6.0.1-cp39-cp39-win_amd64.whl", hash = "sha256:f046b4aab1eca010d64e257489ec97488ce7dba61e3f37f045780b4958a0d436"},
+    {file = "Pyomo-6.0.1.tar.gz", hash = "sha256:4b27bc917b12a6011e7eb3442a54619f0f42f1087d4defa14b903dd985fdbe7c"},
+]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
@@ -340,6 +408,10 @@ pyparsing = [
 pytest = [
     {file = "pytest-6.2.4-py3-none-any.whl", hash = "sha256:91ef2131a9bd6be8f76f1f08eac5c5317221d6ad1e143ae03894b862e8976890"},
     {file = "pytest-6.2.4.tar.gz", hash = "sha256:50bcad0a0b9c5a72c8e4e7c9855a3ad496ca6a881a3641b4260605450772c54b"},
+]
+pytest-django = [
+    {file = "pytest-django-4.4.0.tar.gz", hash = "sha256:b5171e3798bf7e3fc5ea7072fe87324db67a4dd9f1192b037fed4cc3c1b7f455"},
+    {file = "pytest_django-4.4.0-py3-none-any.whl", hash = "sha256:65783e78382456528bd9d79a35843adde9e6a47347b20464eb2c885cb0f1f606"},
 ]
 pytz = [
     {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},

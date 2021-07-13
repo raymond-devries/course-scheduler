@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 
-from courses import forms, models
+from courses import forms, models, solver
 
 
 def get_org(request):
@@ -229,3 +229,25 @@ def edit_mandatory_schedule(request, pk):
 
 def delete_mandatory_schedule(request, pk):
     return delete_model(request, models.MandatorySchedule, pk)
+
+
+@login_required
+def solve(request):
+    org = get_org(request)
+    schedule = solver.solve(org)
+    periods = models.Period.objects.filter(organization=org).order_by("number")
+    rooms = models.Room.objects.filter(organization=org).order_by("building", "number")
+    assignments = []
+
+    for period in periods:
+        period_schedule = []
+        for room in rooms:
+            if (period, room) in schedule:
+                period_schedule.append(schedule[period, room])
+            else:
+                period_schedule.append((None, None))
+
+        assignments.append((period, period_schedule))
+
+    context = {"rooms": rooms, "assignments": assignments}
+    return render(request, "courses/solver_results.html", context=context)
