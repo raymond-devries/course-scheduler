@@ -14,10 +14,14 @@
                 <tr>
                     <td>{{ period }}</td>
                     {% for course, teacher in assignment %}
-                        <td>
-                            <b>{{ course }}</b><br>
-                            {{ teacher }}
-                        </td>
+                        {% if course is None %}
+                            <td></td>
+                        {% else %}
+                            <td>
+                                <b>{{ course }}</b><br>
+                                {{ teacher }}
+                            </td>
+                        {% endif %}
                     {% endfor %}
 
                 </tr>
