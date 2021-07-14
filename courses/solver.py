@@ -1,7 +1,15 @@
+import itertools
+
 import pyomo.environ as pe
 import pyomo.opt as po
+from pyomo.gdp import Disjunction
 
 from courses import models
+
+
+def get_unique_combos(iterable1, iterable2):
+    permut = itertools.permutations(iterable1, len(iterable2))
+    return [list(zip(comb, iterable2)) for comb in permut]
 
 
 # noinspection PyUnusedLocal
@@ -76,6 +84,16 @@ def create_model(org: models.Organization):
             organization=org, avoid=True
         ).values_list("pk", flat=True)
     )
+    mandatory_schedules = [
+        list(mc.courses.all().values_list("pk", flat=True))
+        for mc in models.MandatorySchedule.objects.filter(organization=org)
+    ]
+
+    mandatory_possible_combos = [
+        get_unique_combos(pyomo_model.periods, schedule)
+        for schedule in mandatory_schedules
+    ]
+
     pyomo_model.anchored = pe.Param(
         pyomo_model.periods,
         pyomo_model.teachers,
@@ -158,6 +176,29 @@ def create_model(org: models.Organization):
             )
             == pyomo_model.course_number_offered[c]
         )
+
+    for i, combos in enumerate(mandatory_possible_combos):
+        print(combos)
+        setattr(
+            pyomo_model,
+            f"disjunction{i}",
+            Disjunction(
+                expr=[
+                    [
+                        sum(
+                            pyomo_model.assignments[p, t, r, c]
+                            for t in pyomo_model.teachers
+                            for r in pyomo_model.rooms
+                        )
+                        >= 1
+                        for p, c in combo
+                    ]
+                    for combo in combos
+                ]
+            ),
+        )
+
+    pe.TransformationFactory("gdp.bigm").apply_to(pyomo_model)
 
     return pyomo_model
 
