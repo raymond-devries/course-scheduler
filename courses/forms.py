@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from courses import models
 
@@ -45,6 +46,14 @@ class AnchoredCourseForm(forms.ModelForm):
 
 
 class MandatoryScheduleForm(forms.ModelForm):
+    def clean(self):
+        if len(c := self.cleaned_data.get("courses")) > len(
+            models.Period.objects.filter(organization=c.first().organization)
+        ):
+            raise ValidationError(
+                "A mandatory schedule cannot have more classes than there is periods"
+            )
+
     class Meta:
         model = models.MandatorySchedule
         exclude = ["organization"]
