@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.cache import never_cache
 
 from courses import forms, models, solver
 
@@ -89,6 +90,7 @@ def get_home_context(request):
     }
 
 
+@never_cache
 @login_required
 def home(request):
     context = get_home_context(request)
