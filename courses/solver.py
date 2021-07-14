@@ -205,8 +205,8 @@ def create_model(org: models.Organization):
 
 def solve(org: models.Organization):
     pyomo_model = create_model(org)
-    solver = po.SolverFactory("glpk")
-    solver_results = solver.solve(pyomo_model, tee=True)
+    solver = po.SolverManagerFactory("neos")
+    solver_results = solver.solve(pyomo_model, tee=True, opt="cplex")
 
     if (solver_results.solver.status == po.SolverStatus.ok) and (
         solver_results.solver.termination_condition == po.TerminationCondition.optimal
