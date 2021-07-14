@@ -1,5 +1,6 @@
 {% load obj_tags %}
 <h4 class="title is-4">{{ data.model_name }}</h4>
+<small><b>*Anchored courses cannot be edited</b></small>
 <div class="content">
     <table class="table">
         {% include "courses/home_components/table_header.html" %}
@@ -30,3 +31,14 @@
     </table>
     {% include "courses/home_components/add_form.html" %}
 </div>
+<script>
+    function disable(id) {
+        let el = document.getElementById(id)
+        el.disabled = true
+    }
+    {% for instance in data.instances %}
+        {% if instance.anchoredcourse %}
+            disable("{{ data.model_name }}" + "-edit-" + "{{ instance.pk }}")
+        {% endif %}
+    {% endfor %}
+</script>

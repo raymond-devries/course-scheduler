@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class Organization(models.Model):
@@ -51,6 +54,9 @@ class Room(OrgData):
     number = models.IntegerField()
     building = models.ForeignKey(Building, models.CASCADE)
 
+    class Meta:
+        unique_together = ("number", "building")
+
     def __str__(self):
         return f"{self.building}, Room {self.number}"
 
@@ -67,12 +73,38 @@ class Course(OrgData):
 
 
 class AnchoredCourse(OrgData):
-    course = models.ForeignKey(Course, models.CASCADE)
-    room = models.ForeignKey(Room, models.CASCADE)
+    course = models.OneToOneField(Course, models.CASCADE)
     period = models.ForeignKey(Period, models.CASCADE)
+    room = models.ForeignKey(Room, models.CASCADE)
+    teacher = models.ForeignKey(Teacher, models.CASCADE)
+
+    class Meta:
+        unique_together = ("room", "period")
 
     def __str__(self):
-        return f"Course: {self.course}, Room: {self.room}, Period: {self.period}"
+        return (
+            f"Course: {self.course}, Room: {self.room}, "
+            f"Teacher: {self.teacher}, Period: {self.period}"
+        )
+
+    def clean(self):
+        if self.period in self.course.barred_period.all():
+            raise ValidationError(
+                "The course cannot be anchored in a one of "
+                "the course's barred periods"
+            )
+        if self.room not in self.course.room.all():
+            raise ValidationError(
+                "The course cannot be anchored in this room "
+                "since the course does not have it as an option"
+            )
+        if self.teacher not in self.course.teacher.all():
+            raise ValidationError(
+                (
+                    "The course cannot be anchored with this teacher "
+                    "since the course does not have them as an option"
+                )
+            )
 
 
 class MandatorySchedule(OrgData):
