@@ -12,7 +12,9 @@ def get_model_name(model):
     return model._meta.verbose_name.title()
 
 
-def create_model_context(request, model, form, field_headers, fields, url_suffix):
+def create_model_context(
+    request, model, form, field_headers, fields, url_suffix, help_message=""
+):
     org = get_org(request)
     return {
         "instances": model.objects.filter(organization=org),
@@ -25,6 +27,7 @@ def create_model_context(request, model, form, field_headers, fields, url_suffix
             "edit": "edit_" + url_suffix,
             "delete": "delete_" + url_suffix,
         },
+        "help_message": help_message,
     }
 
 
@@ -34,9 +37,11 @@ def get_home_context(request):
             request,
             models.Period,
             forms.PeriodForm,
-            ["#", "Start", "End"],
-            ["number", "start", "end"],
+            ["#", "Start", "End", "Avoid"],
+            ["number", "start", "end", "avoid"],
             "period",
+            help_message="*If you mark a period to be avoided the schedule solver will "
+            "try and minimize the amount of classes in that period",
         ),
         "teacher_data": create_model_context(
             request,
@@ -235,6 +240,8 @@ def delete_mandatory_schedule(request, pk):
 def solve(request):
     org = get_org(request)
     schedule = solver.solve(org)
+    if schedule is False:
+        return render(request, "courses/solver_results.html", context={"solved": False})
     periods = models.Period.objects.filter(organization=org).order_by("number")
     rooms = models.Room.objects.filter(organization=org).order_by("building", "number")
     assignments = []
@@ -249,5 +256,5 @@ def solve(request):
 
         assignments.append((period, period_schedule))
 
-    context = {"rooms": rooms, "assignments": assignments}
+    context = {"rooms": rooms, "assignments": assignments, "solved": True}
     return render(request, "courses/solver_results.html", context=context)

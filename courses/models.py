@@ -1,8 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
 
 class Organization(models.Model):
@@ -30,6 +28,7 @@ class Period(OrgData):
     number = models.PositiveIntegerField()
     start = models.TimeField()
     end = models.TimeField()
+    avoid = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Period {self.number}"
