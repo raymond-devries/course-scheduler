@@ -178,7 +178,6 @@ def create_model(org: models.Organization):
         )
 
     for i, combos in enumerate(mandatory_possible_combos):
-        print(combos)
         setattr(
             pyomo_model,
             f"disjunction{i}",
