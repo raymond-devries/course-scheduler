@@ -72,7 +72,7 @@ class Course(OrgData):
 
 
 class AnchoredCourse(OrgData):
-    course = models.OneToOneField(Course, models.CASCADE)
+    course = models.ForeignKey(Course, models.CASCADE)
     period = models.ForeignKey(Period, models.CASCADE)
     room = models.ForeignKey(Room, models.CASCADE)
     teacher = models.ForeignKey(Teacher, models.CASCADE)
@@ -103,6 +103,15 @@ class AnchoredCourse(OrgData):
                     "The course cannot be anchored with this teacher "
                     "since the course does not have them as an option"
                 )
+            )
+
+        if (
+            AnchoredCourse.objects.filter(course=self.course).count()
+            >= self.course.number_offered
+        ):
+            raise ValidationError(
+                f"The number of anchored courses of this type "
+                f"cannot exceed the number of times this course is offered"
             )
 
 

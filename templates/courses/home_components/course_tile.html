@@ -37,7 +37,7 @@
         el.disabled = true
     }
     {% for instance in data.instances %}
-        {% if instance.anchoredcourse %}
+        {% if instance.anchoredcourse_set.exists %}
             disable("{{ data.model_name }}" + "-edit-" + "{{ instance.pk }}")
         {% endif %}
     {% endfor %}
