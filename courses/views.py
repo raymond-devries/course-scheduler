@@ -1,8 +1,36 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import never_cache
 
 from courses import forms, models, solver
+
+
+def signup(request):
+    if request.method == "POST":
+        form = forms.SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()  # load the profile instance created by the signal
+            user.save()
+
+            org_name = form.cleaned_data.get("organization_name")
+            org_city = form.cleaned_data.get("organization_city")
+            org_state = form.cleaned_data.get("organization_state")
+            org_zipcode = form.cleaned_data.get("organization_zipcode")
+
+            org = models.Organization.objects.create(
+                name=org_name, city=org_city, state=org_state, zipcode=org_zipcode
+            )
+            models.Profile.objects.create(organization=org, user=user)
+
+            raw_password = form.cleaned_data.get("password1")
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return redirect("home")
+    else:
+        form = forms.SignUpForm()
+    return render(request, "courses/accounts/signup.html", {"form": form})
 
 
 def get_org(request):

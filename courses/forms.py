@@ -1,7 +1,27 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from courses import models
+
+
+class SignUpForm(UserCreationForm):
+    organization_name = forms.CharField(max_length=200)
+    organization_city = forms.CharField(max_length=200)
+    organization_state = forms.CharField(max_length=200)
+    organization_zipcode = forms.CharField(max_length=20)
+
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        )
 
 
 class PeriodForm(forms.ModelForm):

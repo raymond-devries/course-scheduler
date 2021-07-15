@@ -8,18 +8,20 @@
                     Welcome!
                 </div>
                 <div class="message-body">
-                    Welcome to course scheduler! <a href="{% url "signup" %}">
-                    Signup here</a> or login below.
+                    Welcome to course scheduler! Signup for an account below.
                 </div>
             </article>
-            <h3 class="has-text-centered title is-3">Login</h3>
+            <h3 class="has-text-centered title is-3">Signup</h3>
             <form method="POST">
                 {% csrf_token %}
                 {{ form|bulma }}
                 <button type="submit" class="button is-primary is-fullwidth">
-                    <strong>Log In</strong>
+                    <strong>Sign
+                        Up
+                    </strong>
                 </button>
             </form>
         </div>
     </div>
+
 {% endblock %}
