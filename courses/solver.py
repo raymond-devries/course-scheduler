@@ -204,6 +204,8 @@ def create_model(org: models.Organization):
 
 def solve(org: models.Organization):
     pyomo_model = create_model(org)
+    if len(pyomo_model.courses) == 0:
+        return False
     solver = po.SolverManagerFactory("neos")
     solver_results = solver.solve(pyomo_model, tee=True, opt="cplex")
 
