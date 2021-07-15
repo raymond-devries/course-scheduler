@@ -5,13 +5,21 @@
         <p class="has-text-centered has-text-white">Start by adding teachers, buildings,
             rooms and courses.</p>
     </div>
-    <a class="button is-primary is-large is-fullwidth"
-       href="{% url "solve" %}">
-        Create Schedule (This can take awhile)
-    </a>
-    {% include "courses/_home.html" %}
-    <a class="button is-primary is-large is-fullwidth"
-       href="{% url "solve" %}">
-        Create Schedule (This can take awhile)
-    </a>
+    <div x-data="{loading: false}">
+        <a class="button is-primary is-large is-fullwidth"
+           :class="loading ? 'is-loading' : ''"
+           href="{% url "solve" %}"
+           @click="loading=true"
+        >
+            Create Schedule (This can take awhile)
+        </a>
+        {% include "courses/_home.html" %}
+        <a class="button is-primary is-large is-fullwidth"
+           :class="loading ? 'is-loading' : ''"
+           href="{% url "solve" %}"
+           @click="loading=true"
+        >
+            Create Schedule (This can take awhile)
+        </a>
+    </div>
 {% endblock %}
