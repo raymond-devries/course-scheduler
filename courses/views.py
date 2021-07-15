@@ -47,7 +47,7 @@ def create_model_context(
     org = get_org(request)
     return {
         "instances": model.objects.filter(organization=org),
-        "form": form(),
+        "form": form(user=request.user),
         "model_name": get_model_name(model),
         "field_headers": field_headers,
         "fields": fields,
@@ -132,7 +132,7 @@ def partial_home(request, context):
 @login_required
 def add_model(request, model_form, context_name):
     if request.method == "POST":
-        form = model_form(request.POST)
+        form = model_form(request.POST, user=request.user)
         if form.is_valid():
             model_instance = form.save(commit=False)
             model_instance.organization = get_org(request)
@@ -140,7 +140,7 @@ def add_model(request, model_form, context_name):
             form.save_m2m()
             return partial_home(request, get_home_context(request))
     else:
-        form = model_form()
+        form = model_form(user=request.user)
     context = get_home_context(request)
     context[context_name]["form"] = form
     return partial_home(request, context)
@@ -150,7 +150,7 @@ def add_model(request, model_form, context_name):
 def edit_model(request, model, model_form, pk):
     instance = get_object_or_404(model, pk=pk, organization=get_org(request))
     if request.method == "POST":
-        form = model_form(request.POST, instance=instance)
+        form = model_form(request.POST, instance=instance, user=request.user)
         context = get_home_context(request)
         if form.is_valid():
             form.save()
@@ -161,7 +161,7 @@ def edit_model(request, model, model_form, pk):
         context["model_name"] = get_model_name(model)
         return partial_home(request, context=context)
     else:
-        form = model_form(instance=instance)
+        form = model_form(instance=instance, user=request.user)
     context = {"edit_form": form, "model_name": get_model_name(model)}
     return render(request, "courses/home_components/modal_edit.html", context=context)
 

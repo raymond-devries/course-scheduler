@@ -24,7 +24,13 @@ class SignUpForm(UserCreationForm):
         )
 
 
-class PeriodForm(forms.ModelForm):
+class CustomModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.current_user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+
+
+class PeriodForm(CustomModelForm):
     class Meta:
         model = models.Period
         exclude = ["organization"]
@@ -35,40 +41,79 @@ class PeriodForm(forms.ModelForm):
         }
 
 
-class TeacherForm(forms.ModelForm):
+class TeacherForm(CustomModelForm):
     class Meta:
         model = models.Teacher
         exclude = ["organization"]
 
 
-class BuildingForm(forms.ModelForm):
+class BuildingForm(CustomModelForm):
     class Meta:
         model = models.Building
         exclude = ["organization"]
 
 
-class RoomForm(forms.ModelForm):
+class RoomForm(CustomModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["building"].queryset = models.Building.objects.filter(
+            organization__profile__user=self.current_user
+        )
+
     class Meta:
         model = models.Room
         exclude = ["organization"]
 
 
-class CourseForm(forms.ModelForm):
+class CourseForm(CustomModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["teacher"].queryset = models.Teacher.objects.filter(
+            organization__profile__user=self.current_user
+        )
+        self.fields["room"].queryset = models.Room.objects.filter(
+            organization__profile__user=self.current_user
+        )
+        self.fields["barred_period"].queryset = models.Period.objects.filter(
+            organization__profile__user=self.current_user
+        )
+
     class Meta:
         model = models.Course
         exclude = ["organization"]
 
 
-class AnchoredCourseForm(forms.ModelForm):
+class AnchoredCourseForm(CustomModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["course"].queryset = models.Course.objects.filter(
+            organization__profile__user=self.current_user
+        )
+        self.fields["period"].queryset = models.Period.objects.filter(
+            organization__profile__user=self.current_user
+        )
+        self.fields["room"].queryset = models.Room.objects.filter(
+            organization__profile__user=self.current_user
+        )
+        self.fields["teacher"].queryset = models.Teacher.objects.filter(
+            organization__profile__user=self.current_user
+        )
+
     class Meta:
         model = models.AnchoredCourse
         exclude = ["organization"]
 
 
-class MandatoryScheduleForm(forms.ModelForm):
+class MandatoryScheduleForm(CustomModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["courses"].queryset = models.Course.objects.filter(
+            organization__profile__user=self.current_user
+        )
+
     def clean(self):
         if len(c := self.cleaned_data.get("courses")) > len(
-            models.Period.objects.filter(organization=c.first().organization)
+            models.Period.objects.filter(organization__profile__user=self.current_user)
         ):
             raise ValidationError(
                 "A mandatory schedule cannot have more classes than there is periods"
