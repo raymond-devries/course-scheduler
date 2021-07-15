@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+    <a href="{% url "home" %}" class="button my-3 is-info">Back to data entry</a>
     <h1 class="title is-3">Possible Schedule</h1>
     {% if solved %}
         <table class="table">
@@ -29,10 +30,8 @@
             </tbody>
         </table>
     {% else %}
-        <article class="message">
-            <div class="message-header">
-                <p><b>No feasible schedule was found.</b></p>
-            </div>
-        </article>
+        <div class="notification is-danger">
+            <strong>No feasible solution found</strong>
+        </div>
     {% endif %}
 {% endblock %}
