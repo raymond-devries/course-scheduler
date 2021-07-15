@@ -11,7 +11,8 @@ Django = "^3.2.5"
 django-bulma = "^0.8.2"
 Pyomo = "^6.0.1"
 dj-database-url = "^0.5.0"
-psycopg2 = "^2.9.1"
+psycopg2 = {version = "^2.9.1", extras = ["deployment"]}
+whitenoise = {version = "^5.2.0", extras = ["deployment"]}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
