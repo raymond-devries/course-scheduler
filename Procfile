@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: gunicorn scheduler.wsgi
+web: gunicorn scheduler.wsgi --timeout 300
