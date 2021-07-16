@@ -12,42 +12,17 @@ def get_unique_combos(iterable1, iterable2):
     return [list(zip(comb, iterable2)) for comb in permut]
 
 
-# noinspection PyUnusedLocal
-def get_possible_assignments(
-    m: pe.ConcreteModel,
-    period: models.Period,
-    teacher: models.Teacher,
-    room: models.Room,
-    course: models.Course,
-):
-    period = models.Period.objects.get(pk=period)
-    teacher = models.Teacher.objects.get(pk=teacher)
-    room = models.Room.objects.get(pk=room)
-    course = models.Course.objects.get(pk=course)
-    if (
-        period not in course.barred_period.all()
-        and teacher in course.teacher.all()
-        and room in course.room.all()
-    ):
-        return True
-    return False
+def get_possible_assignments(course_pks):
+    data = {}
+    for pk in course_pks:
+        course = models.Course.objects.get(pk=pk)
+        data[pk] = {
+            "barred_periods": set(course.barred_period.values_list("pk", flat=True)),
+            "teachers": set(course.teacher.values_list("pk", flat=True)),
+            "rooms": set(course.room.values_list("pk", flat=True)),
+        }
 
-
-# noinspection PyUnusedLocal
-def get_anchored_courses(
-    m: pe.ConcreteModel,
-    period: models.Period,
-    teacher: models.Teacher,
-    room: models.Room,
-    course: models.Course,
-):
-    period = models.Period.objects.get(pk=period)
-    teacher = models.Teacher.objects.get(pk=teacher)
-    room = models.Room.objects.get(pk=room)
-    course = models.Course.objects.get(pk=course)
-    return models.AnchoredCourse.objects.filter(
-        period=period, room=room, course=course, teacher=teacher
-    ).exists()
+    return data
 
 
 # noinspection PyUnusedLocal
@@ -94,19 +69,30 @@ def create_model(org: models.Organization):
         for schedule in mandatory_schedules
     ]
 
+    anchored_courses = set(
+        models.AnchoredCourse.objects.filter(organization=org).values_list(
+            "period", "teacher", "room", "course"
+        )
+    )
+
     pyomo_model.anchored = pe.Param(
         pyomo_model.periods,
         pyomo_model.teachers,
         pyomo_model.rooms,
         pyomo_model.courses,
-        initialize=get_anchored_courses,
+        initialize=lambda m, p, t, r, c: (p, t, r, c) in anchored_courses,
     )
+
+    possibilities = get_possible_assignments(pyomo_model.courses)
+
     pyomo_model.possible_assignment = pe.Param(
         pyomo_model.periods,
         pyomo_model.teachers,
         pyomo_model.rooms,
         pyomo_model.courses,
-        initialize=get_possible_assignments,
+        initialize=lambda m, p, t, r, c: p not in possibilities[c]["barred_periods"]
+        and t in possibilities[c]["teachers"]
+        and r in possibilities[c]["rooms"],
     )
     pyomo_model.course_number_offered = pe.Param(
         pyomo_model.courses, initialize=get_number_of_courses_offered
