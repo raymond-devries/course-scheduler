@@ -121,3 +121,23 @@ class MandatorySchedule(OrgData):
 
     def __str__(self):
         return self.name
+
+
+class SolvedSchedule(OrgData):
+    name = models.CharField(
+        max_length=200,
+    )
+    solved = models.BooleanField(default=False)
+    finished = models.BooleanField(default=False)
+
+
+class ScheduleItem(OrgData):
+    solved_schedule = models.ForeignKey(SolvedSchedule, models.CASCADE)
+    period_pk = models.PositiveIntegerField()
+    period_number = models.PositiveIntegerField()
+    period_start = models.TimeField()
+    period_end = models.TimeField()
+    room_pk = models.PositiveIntegerField()
+    room_name = models.CharField(max_length=200)
+    teacher_name = models.CharField(max_length=200)
+    course_name = models.CharField(max_length=150)

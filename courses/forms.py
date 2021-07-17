@@ -112,7 +112,7 @@ class MandatoryScheduleForm(CustomModelForm):
         )
 
     def clean(self):
-        if len(c := self.cleaned_data.get("courses")) > len(
+        if len(self.cleaned_data.get("courses")) > len(
             models.Period.objects.filter(organization__profile__user=self.current_user)
         ):
             raise ValidationError(
@@ -122,3 +122,13 @@ class MandatoryScheduleForm(CustomModelForm):
     class Meta:
         model = models.MandatorySchedule
         exclude = ["organization"]
+
+
+class SolvedScheduleForm(forms.ModelForm):
+    class Meta:
+        model = models.SolvedSchedule
+        fields = ["name"]
+        labels = {"name": "Schedule Name"}
+        help_texts = {
+            "name": "Provide a name for this created " "schedule for future reference"
+        }

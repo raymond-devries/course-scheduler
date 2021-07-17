@@ -51,5 +51,5 @@ urlpatterns = [
         views.delete_mandatory_schedule,
         name="delete_mandatory_schedule",
     ),
-    path("solve/", views.solve, name="solve"),
+    path("solver-results/", views.solver_results, name="solver_results"),
 ]

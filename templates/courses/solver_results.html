@@ -1,37 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
     <a href="{% url "home" %}" class="button my-3 is-info">Back to data entry</a>
-    <h1 class="title is-3">Possible Schedule</h1>
-    {% if solved %}
-        <table class="table">
-            <thead>
-            <th></th>
-            {% for room in rooms %}
-                <th>{{ room }}</th>
-            {% endfor %}
-            </thead>
-            <tbody>
-            {% for period, assignment in assignments %}
-                <tr>
-                    <td>{{ period }}</td>
-                    {% for course, teacher in assignment %}
-                        {% if course is None %}
-                            <td></td>
-                        {% else %}
-                            <td>
-                                <b>{{ course }}</b><br>
-                                {{ teacher }}
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="notification is-danger">
-            <strong>No feasible solution found</strong>
-        </div>
-    {% endif %}
+    <h1 class="title is-3">Schedules</h1>
+    {% include "courses/solver_results_components/table.html" %}
 {% endblock %}

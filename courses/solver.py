@@ -1,7 +1,9 @@
 import itertools
+import logging
 
 import pyomo.environ as pe
 import pyomo.opt as po
+from celery import shared_task
 from pyomo.gdp import Disjunction
 
 from courses import models
@@ -188,34 +190,56 @@ def create_model(org: models.Organization):
     return pyomo_model
 
 
-def solve(org: models.Organization):
+def get_schedule_item(org, solved_schedule, p, t, r, c):
+    period = models.Period.objects.get(pk=p)
+    teacher = models.Teacher.objects.get(pk=t)
+    room = models.Room.objects.get(pk=r)
+    course = models.Course.objects.get(pk=c)
+
+    return models.ScheduleItem(
+        organization=org,
+        solved_schedule=solved_schedule,
+        period_pk=period.pk,
+        period_number=period.number,
+        period_start=period.start,
+        period_end=period.end,
+        room_pk=room.pk,
+        room_name=str(room),
+        teacher_name=str(teacher),
+        course_name=course.name,
+    )
+
+
+@shared_task
+def solve(org_pk: int, solved_schedule_pk: int):
+    org = models.Organization.objects.get(pk=org_pk)
+    solved_schedule = models.SolvedSchedule.objects.get(pk=solved_schedule_pk)
+    models.ScheduleItem.objects.filter(solved_schedule=solved_schedule).delete()
     try:
         pyomo_model = create_model(org)
-        solver = po.SolverManagerFactory("neos")
-        solver_results = solver.solve(pyomo_model, tee=True, opt="cplex")
-    except ValueError:
-        return False
+        solver = po.SolverFactory("glpk")
+        solver_results = solver.solve(pyomo_model, tee=True)
+    except ValueError as e:
+        logging.error(f"Solved schedule {solved_schedule_pk} failed. ERROR: {e}")
+        solved_schedule.finished = True
+        solved_schedule.save()
+        return solved_schedule.pk
 
     if (solver_results.solver.status == po.SolverStatus.ok) and (
         solver_results.solver.termination_condition == po.TerminationCondition.optimal
     ):
-        results = {}
-        for p in pyomo_model.periods:
-            for t in pyomo_model.teachers:
-                for r in pyomo_model.rooms:
-                    for c in pyomo_model.courses:
-                        key = (
-                            models.Period.objects.get(pk=p),
-                            models.Room.objects.get(pk=r),
-                        )
-                        if pe.value(pyomo_model.assignments[p, t, r, c]):
-                            if key in results:
-                                raise ValueError("Double assignment")
-                            results[key] = (
-                                models.Course.objects.get(pk=c),
-                                models.Teacher.objects.get(pk=t),
-                            )
-    else:
-        results = False
 
-    return results
+        schedule_items = [
+            get_schedule_item(org, solved_schedule, p, t, r, c)
+            for p in pyomo_model.periods
+            for t in pyomo_model.teachers
+            for r in pyomo_model.rooms
+            for c in pyomo_model.courses
+            if pe.value(pyomo_model.assignments[p, t, r, c])
+        ]
+        models.ScheduleItem.objects.bulk_create(schedule_items)
+        solved_schedule.solved = True
+
+    solved_schedule.finished = True
+    solved_schedule.save()
+    return solved_schedule.pk

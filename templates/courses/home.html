@@ -1,25 +1,19 @@
 {% extends "base.html" %}
+{% load bulma_tags %}
 {% block content %}
     <div class="box has-background-dark">
         <h2 class="has-text-centered title is-2 has-text-white">Course Scheduler</h2>
         <p class="has-text-centered has-text-white">Start by adding teachers, buildings,
             rooms and courses.</p>
     </div>
-    <div x-data="{loading: false}">
-        <a class="button is-primary is-large is-fullwidth"
-           :class="loading ? 'is-loading' : ''"
-           href="{% url "solve" %}"
-           @click="loading=true"
-        >
-            Create Schedule (This can take a while)
-        </a>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ solved_schedule_form|bulma }}
+            <button class="button is-primary is-large is-fullwidth" type="submit">
+                Create Schedule
+            </button>
+        </form>
         {% include "courses/_home.html" %}
-        <a class="button is-primary is-large is-fullwidth"
-           :class="loading ? 'is-loading' : ''"
-           href="{% url "solve" %}"
-           @click="loading=true"
-        >
-            Create Schedule (This can take a while)
-        </a>
     </div>
 {% endblock %}

@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.cache import never_cache
 
 from courses import forms, models, solver
 
@@ -118,10 +117,20 @@ def get_home_context(request):
     }
 
 
-@never_cache
 @login_required
 def home(request):
     context = get_home_context(request)
+    if request.method == "POST":
+        form = forms.SolvedScheduleForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.organization = get_org(request)
+            form.save()
+            solver.solve.delay(get_org(request).pk, instance.pk)
+            return redirect("solver_results")
+    else:
+        form = forms.SolvedScheduleForm()
+    context["solved_schedule_form"] = form
     return render(request, "courses/home.html", context=context)
 
 
@@ -267,24 +276,9 @@ def delete_mandatory_schedule(request, pk):
 
 
 @login_required
-def solve(request):
+def solver_results(request):
     org = get_org(request)
-    schedule = solver.solve(org)
-    if schedule is False:
-        return render(request, "courses/solver_results.html", context={"solved": False})
-    periods = models.Period.objects.filter(organization=org).order_by("number")
-    rooms = models.Room.objects.filter(organization=org).order_by("building", "number")
-    assignments = []
-
-    for period in periods:
-        period_schedule = []
-        for room in rooms:
-            if (period, room) in schedule:
-                period_schedule.append(schedule[period, room])
-            else:
-                period_schedule.append((None, None))
-
-        assignments.append((period, period_schedule))
-
-    context = {"rooms": rooms, "assignments": assignments, "solved": True}
-    return render(request, "courses/solver_results.html", context=context)
+    solved_schedules = models.SolvedSchedule.objects.filter(organization=org)
+    return render(
+        request, "courses/solver_results.html", {"solved_schedules": solved_schedules}
+    )
