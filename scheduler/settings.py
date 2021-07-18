@@ -135,7 +135,7 @@ LOGOUT_REDIRECT_URL = "/accounts/login"
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.rabbitmq.RabbitmqBroker",
     "OPTIONS": {
-        "url": "amqps://hhlftmus:uS36aBeQtydAC4HfjHlgs559vibGctvj@chimpanzee.rmq.cloudamqp.com/hhlftmus",
+        "url": os.getenv("CLOUDAMQP_URL"),
     },
     "MIDDLEWARE": [
         "dramatiq.middleware.Prometheus",
@@ -149,5 +149,3 @@ DRAMATIQ_BROKER = {
 }
 
 DRAMATIQ_TASKS_DATABASE = "default"
-
-NEOS_SOLVER = os.getenv("NEOS_SOLVER")
