@@ -1,3 +1,4 @@
 release: python manage.py migrate
+release: python manage.py migrate django_dramatiq
 web: gunicorn scheduler.wsgi
-worker: celery --app=scheduler.celery worker --loglevel=INFO
+worker: python manage.py rundramatiq --processes 1 --threads 1

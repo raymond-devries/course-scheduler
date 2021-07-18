@@ -1,6 +1,7 @@
 import itertools
 import logging
 
+import dramatiq
 import pyomo.environ as pe
 import pyomo.opt as po
 from celery import shared_task
@@ -185,8 +186,6 @@ def create_model(org: models.Organization):
             ),
         )
 
-    pe.TransformationFactory("gdp.bigm").apply_to(pyomo_model)
-
     return pyomo_model
 
 
@@ -210,15 +209,14 @@ def get_schedule_item(org, solved_schedule, p, t, r, c):
     )
 
 
-@shared_task
 def solve(org_pk: int, solved_schedule_pk: int):
     org = models.Organization.objects.get(pk=org_pk)
     solved_schedule = models.SolvedSchedule.objects.get(pk=solved_schedule_pk)
     models.ScheduleItem.objects.filter(solved_schedule=solved_schedule).delete()
     try:
         pyomo_model = create_model(org)
-        solver = po.SolverFactory("glpk")
-        solver_results = solver.solve(pyomo_model, tee=True)
+        solver = po.SolverManagerFactory("neos")
+        solver_results = solver.solve(pyomo_model, tee=True, opt="ipopt")
     except ValueError as e:
         logging.error(f"Solved schedule {solved_schedule_pk} failed. ERROR: {e}")
         solved_schedule.finished = True

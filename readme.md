@@ -9,4 +9,5 @@ Required Environment Variables:
   e.g. `127.0.0.1,0.0.0.0`
 * `DATABASE_URL`: Url for the database in accordance with the url scheme
   of [dj-database-url](https://github.com/jacobian/dj-database-url#url-schema)
-* `BROKER_URL`: RabbitMQ or Redis instance url 
+* `CLOUDAMQP_URL`: RabbitMQ URL from Cloud AMQP (Can be any CloudMQ instance URL)
+* `NEOS_EMAIL`: Email associated with the NEOS solver

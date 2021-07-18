@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from courses import forms, models, solver
+from courses import forms, models, solver, tasks
 
 
 def signup(request):
@@ -126,7 +126,7 @@ def home(request):
             instance = form.save(commit=False)
             instance.organization = get_org(request)
             form.save()
-            solver.solve.delay(get_org(request).pk, instance.pk)
+            tasks.task_solve.send(get_org(request).pk, instance.pk)
             return redirect("solver_results")
     else:
         form = forms.SolvedScheduleForm()
