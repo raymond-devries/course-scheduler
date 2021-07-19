@@ -276,12 +276,18 @@ def delete_mandatory_schedule(request, pk):
 
 
 @login_required
-def solver_results(request):
+def solver_results(request, template):
     org = get_org(request)
     solved_schedules = models.SolvedSchedule.objects.filter(organization=org)
-    return render(
-        request, "courses/solver_results.html", {"solved_schedules": solved_schedules}
-    )
+    return render(request, template, {"solved_schedules": solved_schedules})
+
+
+def solver_results_full(request):
+    return solver_results(request, "courses/solver_results.html")
+
+
+def solver_results_table(request):
+    return solver_results(request, "courses/solver_results_components/table.html")
 
 
 @login_required

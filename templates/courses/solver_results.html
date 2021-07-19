@@ -2,5 +2,8 @@
 {% block content %}
     <a href="{% url "home" %}" class="button my-3 is-info">Back to data entry</a>
     <h1 class="title is-3">Schedules</h1>
-    {% include "courses/solver_results_components/table.html" %}
+    <p>Results refresh every 5 seconds</p>
+    <div hx-get="{% url "solver_results_table" %}" hx-trigger="every 5s">
+        {% include "courses/solver_results_components/table.html" %}
+    </div>
 {% endblock %}
