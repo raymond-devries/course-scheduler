@@ -282,3 +282,38 @@ def solver_results(request):
     return render(
         request, "courses/solver_results.html", {"solved_schedules": solved_schedules}
     )
+
+
+@login_required
+def solver_results_detail(request, pk):
+    org = get_org(request)
+    solved_schedule = get_object_or_404(models.SolvedSchedule, pk=pk, organization=org)
+    schedule_items = models.ScheduleItem.objects.filter(solved_schedule=solved_schedule)
+    rooms = (
+        schedule_items.order_by("room_name")
+        .values_list("room_name", flat=True)
+        .distinct()
+    )
+    periods = (
+        schedule_items.order_by("period_number")
+        .values_list("period_number", flat=True)
+        .distinct()
+    )
+    schedules = [
+        [
+            si.first()
+            if (
+                si := schedule_items.filter(room_name=room, period_number=period)
+            ).exists()
+            else (None, None)
+            for room in rooms
+        ]
+        for period in periods
+    ]
+    schedules = zip(periods, schedules)
+    context = {
+        "solved_schedule": solved_schedule,
+        "schedules": schedules,
+        "rooms": rooms,
+    }
+    return render(request, "courses/sovler_result_detail.html", context=context)

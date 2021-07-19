@@ -8,7 +8,11 @@
     <tbody>
     {% for schedule in solved_schedules %}
         <tr>
-            <td>{{ schedule.name }}</td>
+            <td>
+                <a href="{% url "solver_results_detail" pk=schedule.pk %}">
+                    {{ schedule.name }}
+                </a>
+            </td>
             {% if not schedule.finished %}
                 <td><span class="tag is-warning">Pending</span></td>
             {% elif not schedule.solved %}

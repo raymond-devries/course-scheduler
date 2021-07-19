@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="title is-3">Schedule Result ({{ solved_schedule.name }})</h1>
+    {% if not solved_schedule.finished %}
+        <div class="notification is-warning">
+            <strong>A possible schedule is pending. The results will be here once it is
+                finished processing.</strong>
+        </div>
+    {% elif not solved_schedule.solved %}
+        <div class="notification is-danger">
+            <strong>No feasible schedule found</strong>
+        </div>
+    {% else %}
+        <div class="notification is-success">
+            <strong>A possible solution was found</strong>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                {% for room in rooms %}
+                    <th>{{ room }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for period, period_schedule in schedules %}
+                <tr>
+                    <td>{{ period }}</td>
+                    {% for item in period_schedule %}
+                        <td>
+                            <strong>{{ item.course_name }}</strong>
+                            <br>
+                            {{ item.teacher_name }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

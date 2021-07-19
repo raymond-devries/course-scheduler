@@ -26,8 +26,6 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 INTERNAL_IPS = ["127.0.0.1", "0.0.0.0"]
 
-# Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -36,7 +34,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_dramatiq",
-    "django_celery_results",
     "bulma",
     "courses",
 ]

@@ -52,4 +52,9 @@ urlpatterns = [
         name="delete_mandatory_schedule",
     ),
     path("solver-results/", views.solver_results, name="solver_results"),
+    path(
+        "solver-results/<int:pk>/",
+        views.solver_results_detail,
+        name="solver_results_detail",
+    ),
 ]

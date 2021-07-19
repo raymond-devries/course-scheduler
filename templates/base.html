@@ -13,9 +13,11 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="{% url "home" %}">
-            <h1>Course Scheduler</h1>
+            Course Scheduler Home
         </a>
-
+        <a class="navbar-item" href="{% url "solver_results" %}">
+            Schedule Solver Results
+        </a>
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
