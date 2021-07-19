@@ -1,10 +1,8 @@
 import itertools
 import logging
 
-import dramatiq
 import pyomo.environ as pe
 import pyomo.opt as po
-from celery import shared_task
 from pyomo.gdp import Disjunction
 
 from courses import models
@@ -186,6 +184,8 @@ def create_model(org: models.Organization):
             ),
         )
 
+    pe.TransformationFactory("core.logical_to_linear").apply_to(pyomo_model)
+
     return pyomo_model
 
 
@@ -216,7 +216,7 @@ def solve(org_pk: int, solved_schedule_pk: int):
     try:
         pyomo_model = create_model(org)
         solver = po.SolverManagerFactory("neos")
-        solver_results = solver.solve(pyomo_model, tee=True, opt="ipopt")
+        solver_results = solver.solve(pyomo_model, tee=True, opt="cplex")
     except ValueError as e:
         logging.error(f"Solved schedule {solved_schedule_pk} failed. ERROR: {e}")
         solved_schedule.finished = True
