@@ -14,11 +14,18 @@
                 </a>
             </td>
             {% if not schedule.finished %}
-                <td><span class="tag is-warning">Pending</span></td>
+                <td>
+                    <span class="tag is-warning is-medium">Pending</span>
+                    <span class="tag is-warning is-medium button is-loading"></span>
+                </td>
             {% elif not schedule.solved %}
-                <td><span class="tag is-danger">No Feasible Schedule Found</span></td>
+                <td><span
+                        class="tag is-danger is-medium">No Feasible Schedule Found</span>
+                </td>
             {% else %}
-                <td><span class="tag is-success">Possible Schedule Found</span></td>
+                <td><span
+                        class="tag is-success is-medium">Possible Schedule Found</span>
+                </td>
             {% endif %}
         </tr>
     {% endfor %}
