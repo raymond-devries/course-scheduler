@@ -211,8 +211,12 @@ def get_schedule_item(org, solved_schedule, p, t, r, c):
 
 def solve(org_pk: int, solved_schedule_pk: int):
     org = models.Organization.objects.get(pk=org_pk)
-    solved_schedule = models.SolvedSchedule.objects.get(pk=solved_schedule_pk)
-    models.ScheduleItem.objects.filter(solved_schedule=solved_schedule).delete()
+    try:
+        solved_schedule = models.SolvedSchedule.objects.get(pk=solved_schedule_pk)
+        models.ScheduleItem.objects.filter(solved_schedule=solved_schedule).delete()
+    except models.SolvedSchedule.DoesNotExist:
+        return
+
     try:
         pyomo_model = create_model(org)
         solver = po.SolverManagerFactory("neos")
