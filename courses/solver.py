@@ -184,7 +184,7 @@ def create_model(org: models.Organization):
             ),
         )
 
-    pe.TransformationFactory("core.logical_to_linear").apply_to(pyomo_model)
+    pe.TransformationFactory("gdp.bigm").apply_to(pyomo_model)
 
     return pyomo_model
 
