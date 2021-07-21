@@ -216,7 +216,7 @@ def solve(org_pk: int, solved_schedule_pk: int):
     try:
         pyomo_model = create_model(org)
         solver = po.SolverManagerFactory("neos")
-        solver_results = solver.solve(pyomo_model, tee=True, opt="cplex")
+        solver_results = solver.solve(pyomo_model, tee=True, opt="minto")
     except ValueError as e:
         logging.error(f"Solved schedule {solved_schedule_pk} failed. ERROR: {e}")
         solved_schedule.finished = True
