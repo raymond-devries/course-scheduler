@@ -1,8 +1,9 @@
-<table class="table">
+<table class="table" id="solver-results-table">
     <thead>
     <tr>
         <th>Schedule Name</th>
         <th>Status</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -27,6 +28,16 @@
                         class="tag is-success is-medium">Possible Schedule Found</span>
                 </td>
             {% endif %}
+            <td>
+                {% if schedule.finished %}
+                    <button class="button is-danger"
+                            hx-delete="{% url "delete_solved_schedule" pk=schedule.pk %}"
+                            hx-swap="innerHTML"
+                            hx-target="#solver-results-table">
+                        Delete
+                    </button>
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>

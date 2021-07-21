@@ -60,4 +60,9 @@ urlpatterns = [
         views.solver_results_detail,
         name="solver_results_detail",
     ),
+    path(
+        "data/solver-results/delete/<int:pk>/",
+        views.delete_solved_schedule,
+        name="delete_solved_schedule",
+    ),
 ]

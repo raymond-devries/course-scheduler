@@ -3,7 +3,7 @@
     <a href="{% url "home" %}" class="button my-3 is-info">Back to data entry</a>
     <h1 class="title is-3">Schedules</h1>
     <p>Results refresh every 5 seconds</p>
-    <div hx-get="{% url "solver_results_table" %}" hx-trigger="every 5s">
+    <div hx-get="{% url "solver_results_table" %}" hx-trigger="every 5s" class="solver-results-table">
         {% include "courses/solver_results_components/table.html" %}
     </div>
 {% endblock %}

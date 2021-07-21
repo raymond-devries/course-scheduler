@@ -323,3 +323,14 @@ def solver_results_detail(request, pk):
         "rooms": rooms,
     }
     return render(request, "courses/sovler_result_detail.html", context=context)
+
+
+@login_required
+def delete_solved_schedule(request, pk):
+    org = get_org(request)
+    if request.method == "DELETE":
+        solved_schedule = get_object_or_404(
+            models.SolvedSchedule, organization=org, pk=pk
+        )
+        solved_schedule.delete()
+    return solver_results_table(request)
