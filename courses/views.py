@@ -1,8 +1,11 @@
+from bokeh.embed import components
+from bokeh.plotting import figure
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 
-from courses import forms, models, solver, tasks
+from courses import forms, models, tasks
 
 
 def signup(request):
@@ -334,3 +337,60 @@ def delete_solved_schedule(request, pk):
         )
         solved_schedule.delete()
     return solver_results_table(request)
+
+
+@login_required
+def data_summary(request):
+    org = get_org(request)
+
+    bar_labels = [
+        "Periods",
+        "Teachers",
+        "Buildings",
+        "Rooms",
+        "Courses",
+        "Anchored Courses",
+        "Mandatory Schedules",
+    ]
+    bar_counts = [
+        models.Period.objects.filter(organization=org).count(),
+        models.Teacher.objects.filter(organization=org).count(),
+        models.Building.objects.filter(organization=org).count(),
+        models.Room.objects.filter(organization=org).count(),
+        models.Course.objects.filter(organization=org).count(),
+        models.AnchoredCourse.objects.filter(organization=org).count(),
+        models.MandatorySchedule.objects.filter(organization=org).count(),
+    ]
+    bar = figure(
+        title="Organization Counts", x_range=bar_labels, y_axis_label="Count", width=800
+    )
+    bar.vbar(x=bar_labels, top=bar_counts, width=0.9)
+    bar_script, bar_plot = components(bar)
+
+    line_items = (
+        models.ScheduleItem.objects.filter(organization=org)
+        .values("period_number")
+        .annotate(period_counts=Count("period_number"))
+        .order_by("period_number")
+    )
+    line = figure(
+        title="Periods vs number of courses",
+        x_axis_label="Periods",
+        y_axis_label="Number of courses across all generated schedules",
+        width=800,
+    )
+    line_x = [item["period_number"] for item in line_items]
+    line_y = [item["period_counts"] for item in line_items]
+    line.line(line_x, line_y)
+    line_script, line_plot = components(line)
+
+    return render(
+        request,
+        "courses/data_summary.html",
+        {
+            "bar_script": bar_script,
+            "bar_plot": bar_plot,
+            "line_script": line_script,
+            "line_plot": line_plot,
+        },
+    )

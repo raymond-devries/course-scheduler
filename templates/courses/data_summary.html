@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ bar_script | safe }}
+    {{ line_script | safe }}
+    <h1 class="title is-3 has-text-centered">Data Summary</h1>
+    {{ bar_plot | safe }}
+    <hr class="my-5">
+    {{ line_plot | safe }}
+{% endblock %}

@@ -65,4 +65,5 @@ urlpatterns = [
         views.delete_solved_schedule,
         name="delete_solved_schedule",
     ),
+    path("data-summary/", views.data_summary, name="data_summary"),
 ]
