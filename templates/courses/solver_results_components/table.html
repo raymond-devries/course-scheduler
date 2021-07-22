@@ -28,12 +28,14 @@
                         class="tag is-success is-medium">Possible Schedule Found</span>
                 </td>
             {% endif %}
-            <td>
+            <td x-data="{loading: false}">
                 {% if schedule.finished %}
                     <button class="button is-danger"
+                            :class="loading ? 'is-loading' : ''"
                             hx-delete="{% url "delete_solved_schedule" pk=schedule.pk %}"
                             hx-swap="innerHTML"
-                            hx-target="#solver-results-table">
+                            hx-target="#solver-results-table"
+                            @click="loading=true">
                         Delete
                     </button>
                 {% endif %}
