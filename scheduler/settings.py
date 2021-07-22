@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "django_dramatiq",
     "bulma",
     "courses",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
