@@ -1,4 +1,6 @@
-# Class Scheduler
+# Course Scheduler
+
+This repository hosts the code for a Django website that finds a feasible and optimal classroom schedule considering the room, teacher, and student constraints. The optimization formulation is taken care of by Pyomo, and [NEOS](https://neos-server.org/neos/) provides the hardware for solving the optimization problem. Solving is done asynchronously, and the project relies on Dramatiq and RabbitMQ to queue up optimization problems for worker processes. 
 
 Required Environment Variables:
 
